@@ -1,43 +1,37 @@
 #include<iostream>
-
 using namespace std;
-bool not_prime[100000000];
-bool check_surprise(int x,int digit);
+void dfs(int prime,int digit, int goal);
 int main() {
-	int digit;
-	cin >> digit;
-	not_prime[0] = not_prime[1] = true;
-	for (int i = 2; i*i < 100000000; i++)
-	{
-		if (!not_prime[i]) {
-			for (int j = i * i; j < 10000000; j += i)
-			{
-				not_prime[j] = true;
-			}
-		}
-	}//소수는 false값 가지도록 함.
-	int start = 1;
-	int end = 10;
-	for (int i = 1; i < digit; i++)
-	{
-		start *= 10;
-		end *= 10;
-	}
-	int cnt = 0;
-	for (int i = start; i < end; i++)
-	{
-		if (check_surprise(i,digit))
-			cout << i << '\n';
-	}
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout.tie(nullptr);
+	int goal_digit;
+	cin >> goal_digit;
+	dfs(2, 1, goal_digit);
+	dfs(3, 1, goal_digit);
+	dfs(5, 1, goal_digit);
+	dfs(7, 1, goal_digit);
 	return 0;
 }
-bool check_surprise(int x,int digit) {
-	if (digit == 0) {
-		return true;
+void dfs(int prime, int digit, int goal) {
+	if (digit == goal) {
+		cout << prime<<'\n';
+		return;
 	}
-	if (not_prime[x])
-		return false;
-	x /= 10;
-	return check_surprise(x, digit - 1);
+	for (int i = 1; i < 10; i+=2)
+	{
+		int x = prime * 10 + i;
+		bool is_prime = true;
+		for (int j = 3; j*j <= x; j+=2)
+		{
+			if (x % j == 0)
+			{
+				is_prime = false;
+				break;
+			}
+		}
+		if (!is_prime)
+			continue;
+		dfs(x, digit + 1, goal);
+	}
 }
-
